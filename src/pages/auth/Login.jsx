@@ -1,57 +1,43 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(""); // Clear previous errors
 
     try {
-     
-      const response = await fetch('http://127.0.0.1:5555/login', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5555/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-       
-        const data = await response.json();
-        throw new Error(data.error || 'Login failed');
+        // If the response is not OK, extract error details
+        const errorData = await response.json();
+        setError(errorData.error || "Login failed. Please try again.");
+        return;
       }
 
-     
       const data = await response.json();
+      console.log("Response Data:", data);
 
-  
-      localStorage.setItem('token', data.user.token);
-      localStorage.setItem('role', data.user.role);
+      // Store token and user id
+      localStorage.setItem("authToken", data.user.token);
 
-     
-      const role = data.user.role;
-
-     
-      if (role === 'job_seeker') {
-        navigate('/');
-      } else if (role === 'organisation') {
-        navigate('/employer');
-      } else if (role === 'admin') {
-        navigate('/admin');
-      }
-
-    } catch (err) {
-    
-      setError(err.message);
+      // Navigate to dashboard
+      navigate("/dashboard");
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+      console.error("Login error:", error);
     }
   };
 
@@ -65,7 +51,10 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           {/* Email input */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Email
             </label>
             <input
@@ -80,7 +69,10 @@ export default function Login() {
 
           {/* Password input */}
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold text-gray-700"
+            >
               Password
             </label>
             <input
@@ -105,7 +97,7 @@ export default function Login() {
         {/* Sign up link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <a href="/signup" className="text-blue-600 hover:text-blue-700">
               Sign up
             </a>

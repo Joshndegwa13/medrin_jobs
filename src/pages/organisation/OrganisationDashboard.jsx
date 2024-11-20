@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   BriefcaseIcon,
   UserGroupIcon,
@@ -9,7 +9,7 @@ import {
   XMarkIcon,
   ClockIcon,
   CheckCircleIcon,
-} from '@heroicons/react/24/outline';
+} from "@heroicons/react/24/outline";
 
 const StatCard = ({ stat, onClick }) => (
   <motion.div
@@ -68,7 +68,9 @@ const ActivityItem = ({ activity }) => (
     className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
   >
     <div className="flex items-center gap-4">
-      <div className={`h-10 w-10 rounded-full ${activity.iconBg} flex items-center justify-center`}>
+      <div
+        className={`h-10 w-10 rounded-full ${activity.iconBg} flex items-center justify-center`}
+      >
         {activity.icon}
       </div>
       <div>
@@ -83,51 +85,79 @@ const ActivityItem = ({ activity }) => (
   </motion.div>
 );
 
-const EmployerDashboard = () => {
+const Organisation = ({ user }) => {
   const [selectedStat, setSelectedStat] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const stats = [
-    { 
-      name: "Active Jobs", 
-      value: "12", 
+    {
+      name: "Active Jobs",
+      value: "12",
       icon: BriefcaseIcon,
       items: [
-        { title: "Senior Software Engineer", applicants: 45, deadline: "2024-02-28" },
+        {
+          title: "Senior Software Engineer",
+          applicants: 45,
+          deadline: "2024-02-28",
+        },
         { title: "Product Manager", applicants: 32, deadline: "2024-03-15" },
-        { title: "UX Designer", applicants: 28, deadline: "2024-03-10" }
-      ]
+        { title: "UX Designer", applicants: 28, deadline: "2024-03-10" },
+      ],
     },
-    { 
-      name: "Total Applicants", 
-      value: "148", 
+    {
+      name: "Total Applicants",
+      value: "148",
       icon: UserGroupIcon,
       items: [
-        { name: "John Doe", position: "Senior Software Engineer", status: "Under Review" },
-        { name: "Jane Smith", position: "Product Manager", status: "Shortlisted" },
-        { name: "Mike Johnson", position: "UX Designer", status: "New" }
-      ]
+        {
+          name: "John Doe",
+          position: "Senior Software Engineer",
+          status: "Under Review",
+        },
+        {
+          name: "Jane Smith",
+          position: "Product Manager",
+          status: "Shortlisted",
+        },
+        { name: "Mike Johnson", position: "UX Designer", status: "New" },
+      ],
     },
-    { 
-      name: "Shortlisted", 
-      value: "24", 
+    {
+      name: "Shortlisted",
+      value: "24",
       icon: ChartBarIcon,
       items: [
-        { name: "Alice Brown", position: "Senior Software Engineer", rating: 4.8 },
+        {
+          name: "Alice Brown",
+          position: "Senior Software Engineer",
+          rating: 4.8,
+        },
         { name: "Bob Wilson", position: "Product Manager", rating: 4.9 },
-        { name: "Carol White", position: "UX Designer", rating: 4.7 }
-      ]
+        { name: "Carol White", position: "UX Designer", rating: 4.7 },
+      ],
     },
-    { 
-      name: "New Applications", 
-      value: "8", 
+    {
+      name: "New Applications",
+      value: "8",
       icon: DocumentPlusIcon,
       items: [
-        { name: "David Lee", position: "Senior Software Engineer", appliedAt: "2 hours ago" },
-        { name: "Emma Davis", position: "Product Manager", appliedAt: "3 hours ago" },
-        { name: "Frank Miller", position: "UX Designer", appliedAt: "4 hours ago" }
-      ]
-    }
+        {
+          name: "David Lee",
+          position: "Senior Software Engineer",
+          appliedAt: "2 hours ago",
+        },
+        {
+          name: "Emma Davis",
+          position: "Product Manager",
+          appliedAt: "3 hours ago",
+        },
+        {
+          name: "Frank Miller",
+          position: "UX Designer",
+          appliedAt: "4 hours ago",
+        },
+      ],
+    },
   ];
 
   const recentActivities = [
@@ -136,22 +166,22 @@ const EmployerDashboard = () => {
       description: "David Lee applied for Senior Software Engineer position",
       time: "2 minutes ago",
       icon: <UserGroupIcon className="h-6 w-6 text-blue-600" />,
-      iconBg: "bg-blue-100"
+      iconBg: "bg-blue-100",
     },
     {
       title: "Candidate Shortlisted",
       description: "Emma Davis was shortlisted for Product Manager position",
       time: "1 hour ago",
       icon: <CheckCircleIcon className="h-6 w-6 text-green-600" />,
-      iconBg: "bg-green-100"
+      iconBg: "bg-green-100",
     },
     {
       title: "New Job Posted",
       description: "UX Designer position has been published",
       time: "2 hours ago",
       icon: <BriefcaseIcon className="h-6 w-6 text-purple-600" />,
-      iconBg: "bg-purple-100"
-    }
+      iconBg: "bg-purple-100",
+    },
   ];
 
   const handleStatClick = (stat) => {
@@ -176,9 +206,13 @@ const EmployerDashboard = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-medium text-gray-900">{item.title}</h3>
-                  <p className="text-sm text-gray-600">{item.applicants} applicants</p>
+                  <p className="text-sm text-gray-600">
+                    {item.applicants} applicants
+                  </p>
                 </div>
-                <p className="text-sm text-gray-500">Deadline: {item.deadline}</p>
+                <p className="text-sm text-gray-500">
+                  Deadline: {item.deadline}
+                </p>
               </div>
             ) : (
               <div className="flex justify-between items-center">
@@ -201,7 +235,9 @@ const EmployerDashboard = () => {
     <div className="min-h-screen pt-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Employer Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Organisation Dashboard
+          </h1>
           <Link to="/employer/post-job">
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -227,7 +263,9 @@ const EmployerDashboard = () => {
 
         {/* Recent Activity */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Recent Activity
+          </h2>
           <div className="space-y-4">
             {recentActivities.map((activity, index) => (
               <ActivityItem key={index} activity={activity} />
@@ -248,4 +286,4 @@ const EmployerDashboard = () => {
   );
 };
 
-export default EmployerDashboard;
+export default Organisation;

@@ -1,49 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'react-router-dom';
-import { useJobs } from '../contexts/JobContext';
-import { locations, categories, employmentTypes, experienceLevels } from '../data/jobsData';
-import JobCard from '../components/JobCard';
-import FilterSection from '../components/FilterSection';
-import JobModal from '../components/JobModal';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
+import { useJobs } from "../../contexts/JobContext";
+import {
+  locations,
+  categories,
+  employmentTypes,
+  experienceLevels,
+} from "../../data/jobsData";
+import JobCard from "../../components/JobCard";
+import FilterSection from "../../components/FilterSection";
+import JobModal from "../../components/JobModal";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-const FindJobs = () => {
+const FindJobs = ({ user }) => {
   const { jobs } = useJobs();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState('');
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
   const [filteredJobs, setFilteredJobs] = useState(jobs);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Update search query when URL parameter changes
   useEffect(() => {
-    const searchFromUrl = searchParams.get('search');
+    const searchFromUrl = searchParams.get("search");
     if (searchFromUrl) {
       setSearchQuery(searchFromUrl);
     }
   }, [searchParams]);
 
   useEffect(() => {
-    const filtered = jobs.filter(job => {
-      const matchesSearch = 
+    const filtered = jobs.filter((job) => {
+      const matchesSearch =
         job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesLocation = !selectedLocation || job.location === selectedLocation;
-      const matchesCategory = !selectedCategory || job.category === selectedCategory;
+      const matchesLocation =
+        !selectedLocation || job.location === selectedLocation;
+      const matchesCategory =
+        !selectedCategory || job.category === selectedCategory;
       const matchesType = !selectedType || job.employmentType === selectedType;
-      const matchesLevel = !selectedLevel || job.experienceLevel === selectedLevel;
+      const matchesLevel =
+        !selectedLevel || job.experienceLevel === selectedLevel;
 
-      return matchesSearch && matchesLocation && matchesCategory && matchesType && matchesLevel;
+      return (
+        matchesSearch &&
+        matchesLocation &&
+        matchesCategory &&
+        matchesType &&
+        matchesLevel
+      );
     });
 
     setFilteredJobs(filtered);
-  }, [searchQuery, selectedLocation, selectedCategory, selectedType, selectedLevel, jobs]);
+  }, [
+    searchQuery,
+    selectedLocation,
+    selectedCategory,
+    selectedType,
+    selectedLevel,
+    jobs,
+  ]);
 
   const handleJobClick = (job) => {
     setSelectedJob(job);
@@ -78,8 +101,12 @@ const FindJobs = () => {
                 className="py-4 px-4 rounded-xl border-2 border-white/20 bg-white/10 text-white outline-none focus:border-white"
               >
                 <option value="">All Locations</option>
-                {locations.map(location => (
-                  <option key={location} value={location} className="text-gray-900">
+                {locations.map((location) => (
+                  <option
+                    key={location}
+                    value={location}
+                    className="text-gray-900"
+                  >
                     {location}
                   </option>
                 ))}
@@ -124,7 +151,7 @@ const FindJobs = () => {
                 className="py-2 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-primary-500"
               >
                 <option value="">All Categories</option>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -133,11 +160,8 @@ const FindJobs = () => {
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div
-                layout
-                className="space-y-6"
-              >
-                {filteredJobs.map(job => (
+              <motion.div layout className="space-y-6">
+                {filteredJobs.map((job) => (
                   <JobCard
                     key={job.id}
                     job={job}
@@ -150,7 +174,9 @@ const FindJobs = () => {
                     animate={{ opacity: 1 }}
                     className="text-center py-12"
                   >
-                    <p className="text-xl text-gray-600">No jobs found matching your criteria</p>
+                    <p className="text-xl text-gray-600">
+                      No jobs found matching your criteria
+                    </p>
                   </motion.div>
                 )}
               </motion.div>
