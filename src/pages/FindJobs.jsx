@@ -20,7 +20,6 @@ const FindJobs = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Update search query when URL parameter changes
   useEffect(() => {
     const searchFromUrl = searchParams.get('search');
     if (searchFromUrl) {
@@ -63,13 +62,16 @@ const FindJobs = () => {
           <form onSubmit={handleSearch} className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Job Title or Keyword"
                   className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-white/20 focus:border-white focus:ring-4 focus:ring-white/20 transition-all outline-none bg-white/10 text-white placeholder-white/60"
+                />
+                <MagnifyingGlassIcon 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-white/60" 
+                  onClick={handleSearch}
                 />
               </div>
               <select
@@ -84,14 +86,6 @@ const FindJobs = () => {
                   </option>
                 ))}
               </select>
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-white text-primary-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-all shadow-lg font-medium"
-              >
-                Search Jobs
-              </motion.button>
             </div>
           </form>
         </div>
@@ -133,10 +127,7 @@ const FindJobs = () => {
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div
-                layout
-                className="space-y-6"
-              >
+              <motion.div layout className="space-y-6">
                 {filteredJobs.map(job => (
                   <JobCard
                     key={job.id}

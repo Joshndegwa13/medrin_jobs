@@ -1,96 +1,72 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { auth } from '../services/api';
-import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  // Initialize auth state
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-        
-        if (decoded.exp < currentTime) {
-          handleLogout();
-        } else {
-          setUser(JSON.parse(localStorage.getItem('user')));
-        }
-      } catch (error) {
-        handleLogout();
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  const handleLogin = async (credentials) => {
+  const login = async (credentials) => {
+    // This will be replaced with actual API call
     try {
-      const { data } = await auth.login(credentials);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
+      // Mock login
+      const mockUser = {
+        id: 1,
+        role: credentials.userType,
+        ...(credentials.userType === 'employer' 
+          ? { 
+              company_name: 'Test Company',
+              location: 'Nairobi',
+              description: 'Test company description',
+              mission: 'Our mission',
+              vision: 'Our vision'
+            }
+          : {
+              firstname: 'John',
+              lastname: 'Doe',
+              email: credentials.email,
+              location: 'Nairobi',
+              phone: '+254712345678',
+              dateOfBirth: '1990-01-01'
+            }
+        )
+      };
+      
+      setUser(mockUser);
       toast.success('Login successful!');
-      navigate(data.user.role === 'employer' ? '/employer' : '/find-jobs');
+      navigate(mockUser.role === 'employer' ? '/employer' : '/find-jobs');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error('Login failed');
       throw error;
     }
   };
 
-  const handleGoogleLogin = async (response) => {
-    try {
-      const { data } = await auth.googleAuth(response.credential);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
-      toast.success('Login successful!');
-      navigate(data.user.role === 'employer' ? '/employer' : '/find-jobs');
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Google login failed');
-      throw error;
-    }
-  };
-
-  const handleRegister = async (userData) => {
-    try {
-      const { data } = await auth.register(userData);
-      toast.success('Registration successful! Please verify your email.');
-      return data;
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed');
-      throw error;
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const logout = () => {
     setUser(null);
-    navigate('/login');
+    navigate('/');
     toast.success('Logged out successfully');
+  };
+
+  const updateProfile = async (data) => {
+    // This will be replaced with actual API call
+    try {
+      setUser(prev => ({ ...prev, ...data }));
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      toast.error('Failed to update profile');
+      throw error;
+    }
   };
 
   const value = {
     user,
-    loading,
-    login: handleLogin,
-    googleLogin: handleGoogleLogin,
-    register: handleRegister,
-    logout: handleLogout,
-    isAuthenticated: !!user,
+    login,
+    logout,
+    updateProfile,
+    isAuthenticated: !!user
   };
-
-  if (loading) {
-    return <div>Loading...</div>; // Or your loading component
-  }
 
   return (
     <AuthContext.Provider value={value}>
