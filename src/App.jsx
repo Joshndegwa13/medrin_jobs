@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import ScrollProgress from './components/ScrollProgress';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Categories from './components/Categories';
+import Testimonials from './components/Testimonials';
+import Footer from './components/Footer';
+import FindJobs from './pages/FindJobs';
+import EmployerDashboard from './pages/employer/EmployerDashboard';
+import PostJob from './pages/employer/PostJob';
+import CandidateManagement from './pages/employer/CandidateManagement';
+import PricingPlans from './pages/employer/PricingPlans';
+import SignUp from './pages/auth/SignUp';
+import Login from './pages/auth/Login';
+import JobSeekerSignUp from './pages/auth/JobSeekerSignUp';
+import EmployerSignUp from './pages/auth/EmployerSignUp';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen bg-white">
+      <ScrollProgress />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Hero />
+            <Categories />
+            <Testimonials />
+          </>
+        } />
+        <Route path="/find-jobs" element={<FindJobs />} />
+        <Route path="/employer" element={<EmployerDashboard />} />
+        <Route path="/employer/post-job" element={<PostJob />} />
+        <Route path="/employer/candidates" element={<CandidateManagement />} />
+        <Route path="/employer/pricing" element={<PricingPlans />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup/job-seeker" element={<JobSeekerSignUp />} />
+        <Route path="/signup/employer" element={<EmployerSignUp />} />
+      </Routes>
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;
