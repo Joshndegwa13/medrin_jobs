@@ -1,33 +1,34 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { toast } from 'react-hot-toast';
-import { jobs } from '../services/api';
+import { jobs as jobsApi } from '../services/api';
+import { jobsData } from '../data/jobsData';
 
 const JobContext = createContext(null);
 
 export const JobProvider = ({ children }) => {
-  const queryClient = useQueryClient();
-  const [filters, setFilters] = useState({});
+  const [jobs, setJobs] = useState(jobsData); // Using mock data initially
 
-  // Fetch jobs with filters
-  const { data: jobsData = [], isLoading } = useQuery(
-    ['jobs', filters],
-    () => jobs.getAll(filters),
+  // This will be replaced with actual API call when backend is ready
+  const { isLoading } = useQuery(
+    'jobs',
+    () => jobsApi.getAll(),
     {
-      select: (response) => response?.data ?? [],
+      enabled: false, // Disable auto-fetching for now
+      onSuccess: (data) => {
+        setJobs(data);
+      },
       onError: (error) => {
         toast.error(error.response?.data?.message || 'Failed to fetch jobs');
-      },
-      initialData: []
+      }
     }
   );
 
   // Create job mutation
   const createJobMutation = useMutation(
-    (jobData) => jobs.create(jobData),
+    (jobData) => jobsApi.create(jobData),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('jobs');
         toast.success('Job posted successfully!');
       },
       onError: (error) => {
@@ -38,7 +39,7 @@ export const JobProvider = ({ children }) => {
 
   // Apply to job mutation
   const applyToJobMutation = useMutation(
-    ({ jobId, application }) => jobs.apply(jobId, application),
+    ({ jobId, application }) => jobsApi.apply(jobId, application),
     {
       onSuccess: () => {
         toast.success('Application submitted successfully!');
@@ -50,10 +51,8 @@ export const JobProvider = ({ children }) => {
   );
 
   const value = {
-    jobs: jobsData,
+    jobs,
     isLoading,
-    filters,
-    setFilters,
     createJob: createJobMutation.mutate,
     applyToJob: applyToJobMutation.mutate,
     isCreating: createJobMutation.isLoading,
