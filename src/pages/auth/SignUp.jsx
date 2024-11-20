@@ -27,7 +27,7 @@ const SignUp = () => {
             transition={{ delay: 0.2 }}
           >
             <Link
-              to="/signup/job-seeker"
+              to="/register"
               className="block h-full p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-primary-500"
             >
               <div className="flex flex-col items-center text-center">
@@ -56,7 +56,7 @@ const SignUp = () => {
             transition={{ delay: 0.3 }}
           >
             <Link
-              to="/signup/employer"
+              to="/register"
               className="block h-full p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-primary-500"
             >
               <div className="flex flex-col items-center text-center">

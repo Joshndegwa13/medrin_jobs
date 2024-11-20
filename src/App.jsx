@@ -15,6 +15,9 @@ import SignUp from './pages/auth/SignUp';
 import Login from './pages/auth/Login';
 import JobSeekerSignUp from './pages/auth/JobSeekerSignUp';
 import EmployerSignUp from './pages/auth/EmployerSignUp';
+import Register from './pages/auth/Register'
+import VerifyOtp from './pages/auth/VerifyOtp';
+
 
 function App() {
   return (
@@ -38,6 +41,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup/job-seeker" element={<JobSeekerSignUp />} />
         <Route path="/signup/employer" element={<EmployerSignUp />} />
+        <Route path='/register' element={<Register/>} />
+        <Route path='/verify_otp' element={<VerifyOtp/>} />
+
       </Routes>
       <Footer />
     </div>

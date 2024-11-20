@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showEmployerDropdown, setShowEmployerDropdown] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,8 +25,15 @@ const Navbar = () => {
     setShowEmployerDropdown(false);
   };
 
+  const handleLogout = () => {
+
+    localStorage.removeItem('userToken'); 
+  
+    navigate('/login');
+  };
+
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -34,8 +42,9 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
+          {/* Logo */}
           <Link to="/" className="flex items-center">
-            <motion.span 
+            <motion.span
               className="text-2xl sm:text-3xl font-bold text-primary-600 hover:text-primary-700"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -44,6 +53,7 @@ const Navbar = () => {
             </motion.span>
           </Link>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/find-jobs"
@@ -51,7 +61,7 @@ const Navbar = () => {
             >
               Find Jobs
             </Link>
-            <div 
+            <div
               className="relative"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -60,7 +70,11 @@ const Navbar = () => {
                 className="flex items-center space-x-1 text-primary-600 hover:text-primary-700 font-medium transition-colors"
               >
                 <span>For Employers</span>
-                <ChevronDownIcon className={`h-4 w-4 transition-transform duration-200 ${showEmployerDropdown ? 'rotate-180' : ''}`} />
+                <ChevronDownIcon
+                  className={`h-4 w-4 transition-transform duration-200 ${
+                    showEmployerDropdown ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
               <AnimatePresence>
                 {showEmployerDropdown && (
@@ -90,38 +104,39 @@ const Navbar = () => {
                       >
                         Manage Candidates
                       </Link>
-                      <Link
-                        to="/employer/pricing"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors"
-                      >
-                        Pricing Plans
-                      </Link>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
+            {/* Log In, Sign Up, and Logout Buttons */}
+            <div className="flex items-center space-x-4">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/login"
+                  className="text-primary-600 hover:text-primary-700 font-medium transition-colors px-4 py-2"
+                >
+                  Log in
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/signup"
+                  className="bg-primary-600 text-white px-6 py-2.5 rounded-full hover:bg-primary-700 transition-colors font-medium shadow-lg hover:shadow-primary-500/25"
+                >
+                  Sign up
+                </Link>
+              </motion.div>
+              <button
+                onClick={handleLogout}
+                className="text-red-600 hover:text-red-700 font-medium transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to="/login"
-                className="text-primary-600 hover:text-primary-700 font-medium transition-colors px-4 py-2"
-              >
-                Log in
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to="/signup"
-                className="bg-primary-600 text-white px-6 py-2.5 rounded-full hover:bg-primary-700 transition-colors font-medium shadow-lg hover:shadow-primary-500/25"
-              >
-                Sign up
-              </Link>
-            </motion.div>
-          </div>
-
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -137,6 +152,7 @@ const Navbar = () => {
           </div>
         </div>
 
+        {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -169,20 +185,6 @@ const Navbar = () => {
                   >
                     Post a Job
                   </Link>
-                  <Link
-                    to="/employer/candidates"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Manage Candidates
-                  </Link>
-                  <Link
-                    to="/employer/pricing"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Pricing Plans
-                  </Link>
                 </div>
                 <div className="mt-4 space-y-2 p-2">
                   <Link
@@ -199,6 +201,15 @@ const Navbar = () => {
                   >
                     Sign up
                   </Link>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="block w-full px-3 py-2 rounded-md text-center font-medium text-red-600 hover:bg-red-50"
+                  >
+                    Logout
+                  </button>
                 </div>
               </div>
             </motion.div>
