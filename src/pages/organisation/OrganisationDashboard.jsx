@@ -1,50 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   DocumentPlusIcon,
-  EyeIcon,
+  BriefcaseIcon,
   UserGroupIcon,
   CalendarIcon,
   MapPinIcon,
-  BriefcaseIcon,
-  XMarkIcon,
-  ClockIcon,
-  CheckCircleIcon,
+  EyeIcon,
 } from "@heroicons/react/24/outline";
 
-// Mock data - will be replaced with real data from backend
-const mockJobs = [
-  {
-    id: 1,
-    title: 'Senior Software Engineer',
-    location: 'Nairobi',
-    type: 'Full-time',
-    postedDate: '2024-01-15',
-    applicants: 12,
-    status: 'active'
-  },
-  {
-    id: 2,
-    title: 'Product Manager',
-    location: 'Mombasa',
-    type: 'Full-time',
-    postedDate: '2024-01-18',
-    applicants: 8,
-    status: 'active'
-  },
-  {
-    id: 3,
-    title: 'UX Designer',
-    location: 'Remote',
-    type: 'Contract',
-    postedDate: '2024-01-20',
-    applicants: 15,
-    status: 'active'
-  }
-];
+const formatText = (value) => {
+  if (!value) return value;
+  return value
+    .split("_")
+    .map((word, index) =>
+      index === 0
+        ? word.charAt(0).toUpperCase() + word.slice(1)
+        : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join("-"); // Join the words back with a hyphen
+};
 
-const JobCard = ({ job, onViewApplicants }) => (
+const JobCard = ({ job, onViewApplicants, onDeleteJob }) => (
   <motion.div
     layout
     initial={{ opacity: 0, y: 20 }}
@@ -58,30 +36,47 @@ const JobCard = ({ job, onViewApplicants }) => (
         <div className="mt-2 space-y-2">
           <div className="flex items-center gap-2 text-gray-600">
             <MapPinIcon className="h-5 w-5" />
-            <span>{job.location}</span>
+            <span>{job.organisation.location}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-600">
+            <span>{job.description}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-600">
+            <span>{formatText(job.level)}</span> {/* Format the level */}
+          </div>
+          <div className="flex items-center gap-2 text-gray-600">
+            <span>{formatText(job.job_type)}</span> {/* Format the job_type */}
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <BriefcaseIcon className="h-5 w-5" />
-            <span>{job.type}</span>
+            <span>{formatText(job.industry)}</span> {/* Format the industry */}
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <CalendarIcon className="h-5 w-5" />
-            <span>Posted: {new Date(job.postedDate).toLocaleDateString()}</span>
-          </div>
-          <div className="flex items-center gap-2 text-primary-600">
-            <UserGroupIcon className="h-5 w-5" />
-            <span>{job.applicants} Applicants</span>
+            <span>Posted: {new Date(job.timestamp).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
-      
+    </div>
+
+    {/* Buttons at the bottom */}
+    <div className="mt-4 flex justify-between items-center">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => onViewApplicants(job)}
-        className="p-2 rounded-full text-primary-600 hover:bg-primary-50"
+        className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
       >
-        <EyeIcon className="h-6 w-6" />
+        View Applicants
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => onDeleteJob(job.id)}
+        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+      >
+        Delete Job
       </motion.button>
     </div>
   </motion.div>
@@ -107,7 +102,9 @@ const ApplicantsModal = ({ isOpen, onClose, job }) => (
           <div className="p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{job.title}</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {job.title}
+                </h2>
                 <p className="text-gray-600">Applicants ({job.applicants})</p>
               </div>
               <button
@@ -117,9 +114,7 @@ const ApplicantsModal = ({ isOpen, onClose, job }) => (
                 ×
               </button>
             </div>
-            
             <div className="space-y-4">
-              {/* Mock applicants - will be replaced with real data */}
               {[...Array(job.applicants)].map((_, index) => (
                 <div
                   key={index}
@@ -133,7 +128,7 @@ const ApplicantsModal = ({ isOpen, onClose, job }) => (
                       <p className="text-gray-600">example@email.com</p>
                     </div>
                     <Link
-                      to={`/employer/candidates`}
+                      to={`/organisation/candidates`}
                       className="text-primary-600 hover:text-primary-700"
                     >
                       View Details
@@ -149,182 +144,39 @@ const ApplicantsModal = ({ isOpen, onClose, job }) => (
   </AnimatePresence>
 );
 
-const ActivityItem = ({ activity }) => (
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-  >
-    <div className="flex items-center gap-4">
-      <div
-        className={`h-10 w-10 rounded-full ${activity.iconBg} flex items-center justify-center`}
-      >
-        {activity.icon}
-      </div>
-      <div>
-        <p className="font-medium text-gray-900">{activity.title}</p>
-        <p className="text-sm text-gray-600">{activity.description}</p>
-      </div>
-    </div>
-    <div className="flex items-center gap-2 text-sm text-gray-500">
-      <ClockIcon className="h-4 w-4" />
-      <span>{activity.time}</span>
-    </div>
-  </motion.div>
-);
-
 const Organisation = ({ user }) => {
-  const [selectedStat, setSelectedStat] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const stats = [
-    {
-      name: "Active Jobs",
-      value: "12",
-      icon: BriefcaseIcon,
-      items: [
-        {
-          title: "Senior Software Engineer",
-          applicants: 45,
-          deadline: "2024-02-28",
-        },
-        { title: "Product Manager", applicants: 32, deadline: "2024-03-15" },
-        { title: "UX Designer", applicants: 28, deadline: "2024-03-10" },
-      ],
-    },
-    {
-      name: "Total Applicants",
-      value: "148",
-      icon: UserGroupIcon,
-      items: [
-        {
-          name: "John Doe",
-          position: "Senior Software Engineer",
-          status: "Under Review",
-        },
-        {
-          name: "Jane Smith",
-          position: "Product Manager",
-          status: "Shortlisted",
-        },
-        { name: "Mike Johnson", position: "UX Designer", status: "New" },
-      ],
-    },
-    {
-      name: "Shortlisted",
-      value: "24",
-      icon: ChartBarIcon,
-      items: [
-        {
-          name: "Alice Brown",
-          position: "Senior Software Engineer",
-          rating: 4.8,
-        },
-        { name: "Bob Wilson", position: "Product Manager", rating: 4.9 },
-        { name: "Carol White", position: "UX Designer", rating: 4.7 },
-      ],
-    },
-    {
-      name: "New Applications",
-      value: "8",
-      icon: DocumentPlusIcon,
-      items: [
-        {
-          name: "David Lee",
-          position: "Senior Software Engineer",
-          appliedAt: "2 hours ago",
-        },
-        {
-          name: "Emma Davis",
-          position: "Product Manager",
-          appliedAt: "3 hours ago",
-        },
-        {
-          name: "Frank Miller",
-          position: "UX Designer",
-          appliedAt: "4 hours ago",
-        },
-      ],
-    },
-  ];
-
-  const recentActivities = [
-    {
-      title: "New Application Received",
-      description: "David Lee applied for Senior Software Engineer position",
-      time: "2 minutes ago",
-      icon: <UserGroupIcon className="h-6 w-6 text-blue-600" />,
-      iconBg: "bg-blue-100",
-    },
-    {
-      title: "Candidate Shortlisted",
-      description: "Emma Davis was shortlisted for Product Manager position",
-      time: "1 hour ago",
-      icon: <CheckCircleIcon className="h-6 w-6 text-green-600" />,
-      iconBg: "bg-green-100",
-    },
-    {
-      title: "New Job Posted",
-      description: "UX Designer position has been published",
-      time: "2 hours ago",
-      icon: <BriefcaseIcon className="h-6 w-6 text-purple-600" />,
-      iconBg: "bg-purple-100",
-    },
-  ];
-
-  const handleStatClick = (stat) => {
-    setSelectedStat(stat);
-    setIsModalOpen(true);
-  };
-
-  const renderModalContent = () => {
-    if (!selectedStat) return null;
-
-    return (
-      <div className="space-y-4">
-        {selectedStat.items.map((item, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            {selectedStat.name === "Active Jobs" ? (
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium text-gray-900">{item.title}</h3>
-                  <p className="text-sm text-gray-600">
-                    {item.applicants} applicants
-                  </p>
-                </div>
-                <p className="text-sm text-gray-500">
-                  Deadline: {item.deadline}
-                </p>
-              </div>
-            ) : (
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium text-gray-900">{item.name}</h3>
-                  <p className="text-sm text-gray-600">{item.position}</p>
-                </div>
-                <span className="text-sm">
-                  {item.status || item.rating || item.appliedAt}
-                </span>
-              </div>
-            )}
-          </motion.div>
-        ))}
-      </div>
-    );
-    
-const EmployerDashboard = () => {
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [showApplicantsModal, setShowApplicantsModal] = useState(false);
+  // Fetch jobs from the API
+  useEffect(() => {
+    fetch(`http://127.0.0.1:5555/get_jobs/${user.organisation.id}`)
+      .then((response) => response.json())
+      .then((data) => setJobs(data || []))
+      .catch((error) => console.error("Error fetching jobs:", error));
+  }, []);
 
   const handleViewApplicants = (job) => {
     setSelectedJob(job);
-    setShowApplicantsModal(true);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteJob = (jobId) => {
+    // Find the index of the job to be deleted
+    const jobIndex = jobs.findIndex((job) => job.id === jobId);
+    if (jobIndex !== -1) {
+      // Create a copy of the jobs array and remove the job by popping
+      const updatedJobs = [...jobs];
+      updatedJobs.splice(jobIndex, 1); // Remove the job at the found index
+      setJobs(updatedJobs);
+      console.log(`Job with id ${jobId} has been deleted.`);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedJob(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -334,12 +186,11 @@ const EmployerDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">
             Organisation Dashboard
           </h1>
-          <h1 className="text-3xl font-bold text-gray-900">Posted Jobs</h1>
-          <Link to="/employer/post-job">
+          <Link to="/organisation/post-job">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-primary-600 text-white px-6 py-2.5 rounded-lg hover:bg-primary-700 transition-colors shadow-lg hover:shadow-primary-500/25 flex items-center gap-2"
+              className="bg-primary-600 text-white px-6 py-2.5 rounded-lg hover:bg-primary-700 shadow-lg flex items-center gap-2"
             >
               <DocumentPlusIcon className="h-5 w-5" />
               Post New Job
@@ -348,41 +199,26 @@ const EmployerDashboard = () => {
         </div>
 
         <div className="space-y-6">
-          {mockJobs.map(job => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onViewApplicants={handleViewApplicants}
-            />
-          ))}
+          {jobs.length === 0 ? (
+            <p>No jobs available.</p>
+          ) : (
+            jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onViewApplicants={handleViewApplicants}
+                onDeleteJob={handleDeleteJob}
+              />
+            ))
+          )}
         </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Recent Activity
-          </h2>
-          <div className="space-y-4">
-            {recentActivities.map((activity, index) => (
-              <ActivityItem key={index} activity={activity} />
-            ))}
-          </div>
-        </div>
-
-        {/* Modal */}
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title={selectedStat?.name}
-        >
-          {renderModalContent()}
-        </Modal>
-        <ApplicantsModal
-          isOpen={showApplicantsModal}
-          onClose={() => setShowApplicantsModal(false)}
-          job={selectedJob}
-        />
       </div>
+
+      <ApplicantsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        job={selectedJob}
+      />
     </div>
   );
 };

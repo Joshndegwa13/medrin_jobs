@@ -1,82 +1,78 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { z } from 'zod';
-import axios from 'axios';
-
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { z } from "zod";
+import axios from "axios";
 
 const schema = z.object({
-  firstname: z.string().min(2, 'First name is too short'),
-  lastname: z.string().min(2, 'Last name is too short'),
-  phone: z.string().min(10, 'Invalid phone number'),
-  location: z.string().min(2, 'Location is required'),
-  dateOfBirth: z.string().refine(date => new Date(date) < new Date(), {
-    message: 'Date of birth must be in the past'
+  firstname: z.string().min(2, "First name is too short"),
+  lastname: z.string().min(2, "Last name is too short"),
+  phone: z.string().min(10, "Invalid phone number"),
+  location: z.string().min(2, "Location is required"),
+  dateOfBirth: z.string().refine((date) => new Date(date) < new Date(), {
+    message: "Date of birth must be in the past",
   }),
-  cv: z.instanceof(File).optional(), 
+  cv: z.instanceof(File).optional(),
 });
 
-const JobSeekerSignUp = () => {
+const CreateJobSeeker = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    phone: '',
-    location: '',
-    dateOfBirth: '',
+    firstname: "",
+    lastname: "",
+    phone: "",
+    location: "",
+    dateOfBirth: "",
   });
-  const [cv, setCV] = useState(null); 
+  const [cv, setCV] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
- 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && !file.type.includes('pdf')) {
-      setErrors((prev) => ({ ...prev, cv: 'Please upload a PDF file' }));
+    if (file && !file.type.includes("pdf")) {
+      setErrors((prev) => ({ ...prev, cv: "Please upload a PDF file" }));
       return;
     }
     setCV(file);
     if (errors.cv) {
-      setErrors((prev) => ({ ...prev, cv: '' }));
+      setErrors((prev) => ({ ...prev, cv: "" }));
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrors({}); 
+    setErrors({});
 
     try {
-   
       const validatedData = schema.parse({ ...formData, cv });
 
-    
       const formDataToSend = new FormData();
       Object.keys(validatedData).forEach((key) => {
-        if (key === 'cv' && cv) {
-          formDataToSend.append('cv', cv); 
+        if (key === "cv" && cv) {
+          formDataToSend.append("cv", cv);
         } else {
-          formDataToSend.append(key, validatedData[key]); 
+          formDataToSend.append(key, validatedData[key]);
         }
       });
 
-    
-      const response = await axios.post('http://127.0.0.1:5555/create_jobseeker', formDataToSend);
-      toast.success('Registration successful!');
-      navigate('/login'); // Redirect user to login after successful registration
+      const response = await axios.post(
+        "http://127.0.0.1:5555/create_jobseeker",
+        formDataToSend
+      );
+      toast.success("Registration successful!");
+      navigate("/login"); // Redirect user to login after successful registration
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors = {};
@@ -85,7 +81,7 @@ const JobSeekerSignUp = () => {
         });
         setErrors(newErrors); // Update errors state
       } else {
-        toast.error(error.response?.data?.error || 'Registration failed');
+        toast.error(error.response?.data?.error || "Registration failed");
       }
     } finally {
       setIsLoading(false);
@@ -100,7 +96,9 @@ const JobSeekerSignUp = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white p-6 rounded-xl shadow-lg"
         >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Job Seeker Account</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Create Job Seeker Account
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -113,12 +111,14 @@ const JobSeekerSignUp = () => {
                   value={formData.firstname}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.firstname ? 'border-red-500' : 'border-gray-300'
+                    errors.firstname ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
                 {errors.firstname && (
-                  <p className="mt-1 text-sm text-red-500">{errors.firstname}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.firstname}
+                  </p>
                 )}
               </div>
 
@@ -132,7 +132,7 @@ const JobSeekerSignUp = () => {
                   value={formData.lastname}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.lastname ? 'border-red-500' : 'border-gray-300'
+                    errors.lastname ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
@@ -151,7 +151,7 @@ const JobSeekerSignUp = () => {
                   value={formData.phone}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.phone ? 'border-red-500' : 'border-gray-300'
+                    errors.phone ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
@@ -170,7 +170,7 @@ const JobSeekerSignUp = () => {
                   value={formData.location}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.location ? 'border-red-500' : 'border-gray-300'
+                    errors.location ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
@@ -189,12 +189,14 @@ const JobSeekerSignUp = () => {
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'
+                    errors.dateOfBirth ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
                 {errors.dateOfBirth && (
-                  <p className="mt-1 text-sm text-red-500">{errors.dateOfBirth}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.dateOfBirth}
+                  </p>
                 )}
               </div>
 
@@ -207,10 +209,12 @@ const JobSeekerSignUp = () => {
                   accept=".pdf"
                   onChange={handleFileChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.cv ? 'border-red-500' : 'border-gray-300'
+                    errors.cv ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                 />
-                {errors.cv && <p className="mt-1 text-sm text-red-500">{errors.cv}</p>}
+                {errors.cv && (
+                  <p className="mt-1 text-sm text-red-500">{errors.cv}</p>
+                )}
               </div>
             </div>
 
@@ -222,7 +226,7 @@ const JobSeekerSignUp = () => {
                 whileTap={{ scale: 0.98 }}
                 className="bg-primary-600 text-white px-8 py-2.5 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {isLoading ? "Creating Account..." : "Create Account"}
               </motion.button>
             </div>
           </form>
@@ -232,4 +236,4 @@ const JobSeekerSignUp = () => {
   );
 };
 
-export default JobSeekerSignUp;
+export default CreateJobSeeker;

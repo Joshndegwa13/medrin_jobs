@@ -1,57 +1,57 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BuildingOfficeIcon,
   ChevronDownIcon,
   ArrowRightOnRectangleIcon,
-} from '@heroicons/react/24/outline';
+} from "@heroicons/react/24/outline";
 
 const navVariants = {
   hidden: { y: -100, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
-    transition: { 
+    transition: {
       type: "spring",
       stiffness: 100,
-      damping: 20
-    }
-  }
+      damping: 20,
+    },
+  },
 };
 
 const dropdownVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 10,
-    scale: 0.95
+    scale: 0.95,
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 25
-    }
+      damping: 25,
+    },
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: 10,
     scale: 0.95,
     transition: {
-      duration: 0.2
-    }
-  }
+      duration: 0.2,
+    },
+  },
 };
 
-const EmployerNavbar = () => {
+const OrganisationNavbar = ({ user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const mockCompany = {
     name: "ABC Telecomms",
-    logo: null
+    logo: null,
   };
 
   return (
@@ -63,10 +63,7 @@ const EmployerNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-primary-600">
                 Medrin Jobs
@@ -75,10 +72,7 @@ const EmployerNavbar = () => {
           </motion.div>
 
           <div className="flex items-center space-x-6">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 to="/employer/pricing"
                 className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
@@ -87,10 +81,7 @@ const EmployerNavbar = () => {
               </Link>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 to="/employer/candidates"
                 className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
@@ -111,10 +102,10 @@ const EmployerNavbar = () => {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.5 }}
                   >
-                    {mockCompany.logo ? (
-                      <img 
-                        src={mockCompany.logo} 
-                        alt="Company Logo" 
+                    {user.organisation.logo ? (
+                      <img
+                        src={user.organisation.logo}
+                        alt="Company Logo"
                         className="h-8 w-8 rounded-full object-cover border-2 border-primary-100"
                       />
                     ) : (
@@ -123,7 +114,7 @@ const EmployerNavbar = () => {
                       </div>
                     )}
                   </motion.div>
-                  <span className="font-medium">{mockCompany.name}</span>
+                  <span className="font-medium">{user.organisation.name}</span>
                   <motion.div
                     animate={{ rotate: showDropdown ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
@@ -147,7 +138,8 @@ const EmployerNavbar = () => {
                       transition={{ type: "spring", stiffness: 300 }}
                     >
                       <Link
-                        to="/employer/profile"
+                        to="/organisation/profile"
+                        state={{ user }}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50"
                         onClick={() => setShowDropdown(false)}
                       >
@@ -177,4 +169,4 @@ const EmployerNavbar = () => {
   );
 };
 
-export default EmployerNavbar;
+export default OrganisationNavbar;

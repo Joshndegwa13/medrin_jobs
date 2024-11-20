@@ -1,84 +1,84 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   UserCircleIcon,
   ChevronDownIcon,
   ArrowRightOnRectangleIcon,
-} from '@heroicons/react/24/outline';
+} from "@heroicons/react/24/outline";
 
 const navVariants = {
   hidden: { y: -100, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
-    transition: { 
+    transition: {
       type: "spring",
       stiffness: 100,
-      damping: 20
-    }
-  }
+      damping: 20,
+    },
+  },
 };
 
 const dropdownVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 10,
-    scale: 0.95
+    scale: 0.95,
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 25
-    }
+      damping: 25,
+    },
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: 10,
     scale: 0.95,
     transition: {
-      duration: 0.2
-    }
-  }
+      duration: 0.2,
+    },
+  },
 };
 
 const modalVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     scale: 0.9,
-    y: 20
+    y: 20,
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     y: 0,
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 25
-    }
+      damping: 25,
+    },
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     scale: 0.9,
     y: 20,
     transition: {
-      duration: 0.2
-    }
-  }
+      duration: 0.2,
+    },
+  },
 };
 
 const JobSeekerNavbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showApplicationsModal, setShowApplicationsModal] = useState(false);
-  
+
   const mockUser = {
     lastname: "Doe",
-    profileImage: null
+    profileImage: null,
   };
 
   return (
@@ -90,10 +90,7 @@ const JobSeekerNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-primary-600">
                 Medrin Jobs
@@ -124,9 +121,9 @@ const JobSeekerNavbar = () => {
                     transition={{ duration: 0.5 }}
                   >
                     {mockUser.profileImage ? (
-                      <img 
-                        src={mockUser.profileImage} 
-                        alt="Profile" 
+                      <img
+                        src={mockUser.profileImage}
+                        alt="Profile"
                         className="h-8 w-8 rounded-full object-cover border-2 border-primary-100"
                       />
                     ) : (
@@ -159,7 +156,7 @@ const JobSeekerNavbar = () => {
                       transition={{ type: "spring", stiffness: 300 }}
                     >
                       <Link
-                        to="/profile"
+                        to="/jobseeker/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50"
                         onClick={() => setShowDropdown(false)}
                       >

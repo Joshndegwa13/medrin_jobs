@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-hot-toast';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "react-hot-toast";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
-const Profile = () => {
+const JobSeekerProfile = () => {
   const { user, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstname: user?.firstname || '',
-    lastname: user?.lastname || '',
-    location: user?.location || '',
-    phone: user?.phone || '',
-    dateOfBirth: user?.dateOfBirth || '',
+    firstname: user?.firstname || "",
+    lastname: user?.lastname || "",
+    location: user?.location || "",
+    phone: user?.phone || "",
+    dateOfBirth: user?.dateOfBirth || "",
     profileImage: null,
-    cv: null
+    cv: null,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData(prev => ({ ...prev, [name]: files[0] }));
+    setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
   const handleSubmit = async (e) => {
@@ -32,9 +32,9 @@ const Profile = () => {
     try {
       await updateProfile(formData);
       setIsEditing(false);
-      toast.success('Profile updated successfully');
+      toast.success("Profile updated successfully");
     } catch (error) {
-      toast.error('Failed to update profile');
+      toast.error("Failed to update profile");
     }
   };
 
@@ -54,7 +54,7 @@ const Profile = () => {
               onClick={() => setIsEditing(!isEditing)}
               className="text-primary-600 font-medium"
             >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
+              {isEditing ? "Cancel" : "Edit Profile"}
             </motion.button>
           </div>
 
@@ -167,7 +167,7 @@ const Profile = () => {
                   />
                 ) : (
                   <p className="text-gray-600">
-                    {user?.cv ? 'CV uploaded' : 'No CV uploaded'}
+                    {user?.cv ? "CV uploaded" : "No CV uploaded"}
                   </p>
                 )}
               </div>
@@ -192,4 +192,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default JobSeekerProfile;

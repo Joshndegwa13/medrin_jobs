@@ -1,57 +1,57 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { useJobs } from '../../contexts/JobContext';
-import { categories, locations, employmentTypes } from '../../data/jobsData';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useJobs } from "../../contexts/JobContext";
+import { categories, locations, employmentTypes } from "../../data/jobsData";
 
 const PostJob = () => {
   const navigate = useNavigate();
   const { addJob } = useJobs();
   const [formData, setFormData] = useState({
-    title: '',
-    location: '',
-    employmentType: '',
-    category: '',
-    experienceLevel: '',
-    salary: '',
-    description: '',
-    responsibilities: [''],
-    qualifications: [''],
-    benefits: ['']
+    title: "",
+    location: "",
+    employmentType: "",
+    category: "",
+    experienceLevel: "",
+    salary: "",
+    description: "",
+    responsibilities: [""],
+    qualifications: [""],
+    benefits: [""],
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleArrayInput = (index, field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
+      [field]: prev[field].map((item, i) => (i === index ? value : item)),
     }));
   };
 
   const addArrayField = (field) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: [...prev[field], '']
+      [field]: [...prev[field], ""],
     }));
   };
 
   const removeArrayField = (field, index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: prev[field].filter((_, i) => i !== index),
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     addJob(formData);
-    toast.success('Job posted successfully!');
-    navigate('/find-jobs');
+    toast.success("Job posted successfully!");
+    navigate("/dashboard");
   };
 
   return (
@@ -62,8 +62,10 @@ const PostJob = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-xl shadow-lg p-6 md:p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Post a New Job</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            Post a New Job
+          </h1>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -82,21 +84,6 @@ const PostJob = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Salary Range
-                </label>
-                <input
-                  type="text"
-                  name="salary"
-                  value={formData.salary}
-                  onChange={handleInputChange}
-                  placeholder="e.g., KSH 150,000 - 250,000"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Location
                 </label>
                 <select
@@ -107,8 +94,10 @@ const PostJob = () => {
                   required
                 >
                   <option value="">Select Location</option>
-                  {locations.map(location => (
-                    <option key={location} value={location}>{location}</option>
+                  {locations.map((location) => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -125,8 +114,10 @@ const PostJob = () => {
                   required
                 >
                   <option value="">Select Type</option>
-                  {employmentTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
+                  {employmentTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -143,8 +134,10 @@ const PostJob = () => {
                   required
                 >
                   <option value="">Select Category</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -184,54 +177,62 @@ const PostJob = () => {
             </div>
 
             {/* Dynamic Fields */}
-            {['responsibilities', 'qualifications', 'benefits'].map((field) => (
-              <div key={field} className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <label className="block text-sm font-medium text-gray-700 capitalize">
-                    {field}
-                  </label>
-                  <motion.button
-                    type="button"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => addArrayField(field)}
-                    className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-                  >
-                    + Add {field.slice(0, -1)}
-                  </motion.button>
-                </div>
-                {formData[field].map((item, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={item}
-                      onChange={(e) => handleArrayInput(index, field, e.target.value)}
-                      className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      placeholder={`Enter ${field.slice(0, -1)}`}
-                      required
-                    />
-                    {formData[field].length > 1 && (
-                      <motion.button
-                        type="button"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => removeArrayField(field, index)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        Remove
-                      </motion.button>
-                    )}
+            {["responsibilities", "qualifications", "benefits"].map((field) => {
+              const singularField =
+                field === "responsibilities"
+                  ? "responsibility"
+                  : field.slice(0, -1);
+              return (
+                <div key={field} className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-sm font-medium text-gray-700 capitalize">
+                      {field}
+                    </label>
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => addArrayField(field)}
+                      className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                    >
+                      + Add {singularField}
+                    </motion.button>
                   </div>
-                ))}
-              </div>
-            ))}
+                  {formData[field].map((item, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={item}
+                        onChange={(e) =>
+                          handleArrayInput(index, field, e.target.value)
+                        }
+                        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder={`Enter ${singularField}`}
+                        required
+                      />
+                      {formData[field].length > 1 && (
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => removeArrayField(field, index)}
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          Remove
+                        </motion.button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
 
             <div className="flex justify-end gap-4">
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => navigate('/employer')}
+                onClick={() => navigate("/employer")}
                 className="px-6 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
               >
                 Cancel

@@ -8,14 +8,15 @@ export const jobsData = [
     employmentType: "Full-time",
     experienceLevel: "Mid-level",
     salary: "KSH 150,000 - 250,000",
-    description: "We are seeking a talented Software Developer to join our growing team.",
+    description:
+      "We are seeking a talented Software Developer to join our growing team.",
     requirements: [
       "Bachelor's degree in Computer Science or related field",
       "3+ years of experience in web development",
       "Proficiency in React, Node.js, and modern JavaScript",
-      "Strong problem-solving skills"
+      "Strong problem-solving skills",
     ],
-    postedDate: "2024-01-15"
+    postedDate: "2024-01-15",
   },
   {
     id: 2,
@@ -26,14 +27,15 @@ export const jobsData = [
     employmentType: "Internship",
     experienceLevel: "Internship",
     salary: "KSH 25,000",
-    description: "Join our dynamic marketing team as an intern and gain valuable experience.",
+    description:
+      "Join our dynamic marketing team as an intern and gain valuable experience.",
     requirements: [
       "Currently pursuing a degree in Marketing or related field",
       "Strong communication skills",
       "Knowledge of social media platforms",
-      "Creative mindset"
+      "Creative mindset",
     ],
-    postedDate: "2024-01-18"
+    postedDate: "2024-01-18",
   },
   {
     id: 3,
@@ -44,14 +46,15 @@ export const jobsData = [
     employmentType: "Full-time",
     experienceLevel: "Senior-level",
     salary: "KSH 300,000 - 400,000",
-    description: "Leading construction firm seeks experienced Project Manager for large-scale projects.",
+    description:
+      "Leading construction firm seeks experienced Project Manager for large-scale projects.",
     requirements: [
       "10+ years in construction project management",
       "PMP certification",
       "Strong leadership skills",
-      "Experience with large-scale projects"
+      "Experience with large-scale projects",
     ],
-    postedDate: "2024-01-20"
+    postedDate: "2024-01-20",
   },
   {
     id: 4,
@@ -62,15 +65,16 @@ export const jobsData = [
     employmentType: "Remote",
     experienceLevel: "Entry-level",
     salary: "KSH 45,000 - 60,000",
-    description: "Remote position for handling customer inquiries and providing support.",
+    description:
+      "Remote position for handling customer inquiries and providing support.",
     requirements: [
       "Excellent communication skills",
       "Basic computer proficiency",
       "Customer service orientation",
-      "Fluent in English and Swahili"
+      "Fluent in English and Swahili",
     ],
-    postedDate: "2024-01-22"
-  }
+    postedDate: "2024-01-22",
+  },
 ];
 
 export const locations = [
@@ -83,7 +87,7 @@ export const locations = [
   "Malindi",
   "Kitale",
   "Machakos",
-  "Nyeri"
+  "Nyeri",
 ];
 
 export const categories = [
@@ -100,19 +104,14 @@ export const categories = [
   "Agriculture",
   "Hospitality and Leisure",
   "Legal",
-  "Teaching"
+  "Teaching",
 ];
 
-export const employmentTypes = [
-  "Full-time",
-  "Part-time",
-  "Remote",
-  "Internship"
-];
+export const employmentTypes = ["Full-time", "Part-time", "Remote"];
 
 export const experienceLevels = [
   "Internship",
   "Entry-level",
   "Mid-level",
-  "Senior-level"
+  "Senior-level",
 ];

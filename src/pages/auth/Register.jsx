@@ -48,12 +48,17 @@ function Register() {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center py-12 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Register</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Register
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Input */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -70,7 +75,10 @@ function Register() {
 
           {/* Password Input */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
@@ -87,7 +95,10 @@ function Register() {
 
           {/* Role Selection */}
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-gray-700"
+            >
               Role
             </label>
             <select
@@ -101,7 +112,6 @@ function Register() {
               <option value="">Select your role</option>
               <option value="job_seeker">Job Seeker</option>
               <option value="organisation">Employer</option>
-              <option value="admin">Admin</option>
             </select>
           </div>
 
@@ -118,13 +128,17 @@ function Register() {
 
         {/* Error Message */}
         {errorMessage && (
-          <p className="text-red-500 text-sm text-center mt-4">{errorMessage}</p>
+          <p className="text-red-500 text-sm text-center mt-4">
+            {errorMessage}
+          </p>
         )}
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:text-blue-700">Login here</a>
+            <a href="/login" className="text-blue-600 hover:text-blue-700">
+              Login here
+            </a>
           </p>
         </div>
       </div>
@@ -133,4 +147,4 @@ function Register() {
 }
 
 export default Register;
-1
+1;

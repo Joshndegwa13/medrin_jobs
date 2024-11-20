@@ -1,20 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import { BuildingOfficeIcon } from "@heroicons/react/24/outline";
 
-const CompanyProfile = () => {
-  const { user, updateProfile } = useAuth();
+const OrganisationProfile = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [previewLogo, setPreviewLogo] = useState(
+    user?.organisation?.logo || null
+  );
   const [formData, setFormData] = useState({
-    company_name: user?.company_name || "",
-    location: user?.location || "",
-    description: user?.description || "",
-    mission: user?.mission || "",
-    vision: user?.vision || "",
-    companyLogo: null,
+    organisation_name: user?.organisation?.name || "",
+    location: user?.organisation?.location || "",
+    description: user?.organisation?.description || "",
+    mission: user?.organisation?.mission || "",
+    vision: user?.organisation?.vision || "",
+    organisationLogo: null,
   });
+
+  // Populating form data if user changes
+  useEffect(() => {
+    console.log(user);
+
+    setFormData({
+      organisation_name: user?.organisation?.name || "",
+      location: user?.organisation?.location || "",
+      description: user?.organisation?.description || "",
+      mission: user?.organisation?.mission || "",
+      vision: user?.organisation?.vision || "",
+      organisationLogo: null,
+    });
+    setPreviewLogo(user?.organisation?.logo || null);
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,17 +38,36 @@ const CompanyProfile = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, companyLogo: e.target.files[0] }));
+    const file = e.target.files[0];
+    if (
+      file &&
+      (file.type === "image/png" ||
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg")
+    ) {
+      setFormData((prev) => ({ ...prev, organisationLogo: file }));
+      setPreviewLogo(URL.createObjectURL(file)); // Show a preview
+    } else {
+      toast.error(
+        "Invalid file type. Please upload a .png, .jpeg, or .jpg file."
+      );
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const updatedData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value) updatedData.append(key, value);
+    });
+
     try {
-      await updateProfile(formData);
+      await updateProfile(updatedData);
       setIsEditing(false);
-      toast.success("Company profile updated successfully");
+      toast.success("Organisation profile updated successfully");
     } catch (error) {
-      toast.error("Failed to update company profile");
+      toast.error("Failed to update organisation profile");
     }
   };
 
@@ -46,7 +81,7 @@ const CompanyProfile = () => {
         >
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900">
-              Company Profile
+              Organisation Profile
             </h1>
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -61,10 +96,10 @@ const CompanyProfile = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex justify-center mb-8">
               <div className="relative">
-                {user?.companyLogo ? (
+                {previewLogo ? (
                   <img
-                    src={user.companyLogo}
-                    alt="Company Logo"
+                    src={previewLogo}
+                    alt="Organisation Logo"
                     className="h-32 w-32 rounded-full object-cover"
                   />
                 ) : (
@@ -74,7 +109,7 @@ const CompanyProfile = () => {
                   <input
                     type="file"
                     onChange={handleFileChange}
-                    accept="image/*"
+                    accept=".png,.jpeg,.jpg"
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
                 )}
@@ -84,12 +119,12 @@ const CompanyProfile = () => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Company Name
+                  Organisation Name
                 </label>
                 <input
                   type="text"
-                  name="company_name"
-                  value={formData.company_name}
+                  name="organisation_name"
+                  value={formData.organisation_name}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primary-500"
@@ -172,4 +207,4 @@ const CompanyProfile = () => {
   );
 };
 
-export default CompanyProfile;
+export default OrganisationProfile;

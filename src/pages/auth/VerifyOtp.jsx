@@ -37,17 +37,13 @@ function VerifyOtp() {
         const data = await response.json();
         setSuccessMessage(data.message || "Verification successful!");
 
-       
         const userId = data.user.id;
         localStorage.setItem("userId", userId);
 
-   
         if (data.user.role === "job_seeker") {
-          navigate("/signup/job-seeker");
+          navigate("/create-jobseeker");
         } else if (data.user.role === "organisation") {
-          navigate("/signup/employer");
-        } else if (data.user.role === "admin") {
-          navigate("/admin");
+          navigate("/create-organisation");
         } else {
           setErrorMessage("Unknown role. Please contact support.");
         }
@@ -60,12 +56,17 @@ function VerifyOtp() {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center py-12 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Verify OTP</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Verify OTP
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* OTP Input */}
           <div>
-            <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="otp"
+              className="block text-sm font-medium text-gray-700"
+            >
               Enter OTP
             </label>
             <input
@@ -93,10 +94,14 @@ function VerifyOtp() {
 
         {/* Success and Error Messages */}
         {successMessage && (
-          <p className="text-green-500 text-sm text-center mt-4">{successMessage}</p>
+          <p className="text-green-500 text-sm text-center mt-4">
+            {successMessage}
+          </p>
         )}
         {errorMessage && (
-          <p className="text-red-500 text-sm text-center mt-4">{errorMessage}</p>
+          <p className="text-red-500 text-sm text-center mt-4">
+            {errorMessage}
+          </p>
         )}
       </div>
     </div>

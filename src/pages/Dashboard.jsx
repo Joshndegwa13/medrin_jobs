@@ -1,8 +1,9 @@
-// Dashboard.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Organisation from "./organisation/OrganisationDashboard";
+import OrganisationDashboard from "./organisation/OrganisationDashboard";
 import JobSeeker from "./jobseeker/JobSeeker";
+import OrganisationNavbar from "./organisation/OrganisationNavbar";
+import JobSeekerNavbar from "./jobseeker/JobSeekerNavbar";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -49,9 +50,15 @@ export default function Dashboard() {
   return (
     <div>
       {user.role === "job_seeker" ? (
-        <FindJobs user={user} />
+        <>
+          <JobSeekerNavbar user={user} />
+          <JobSeeker user={user} />
+        </>
       ) : (
-        <JobSeeker user={user} />
+        <>
+          <OrganisationNavbar user={user} />
+          <OrganisationDashboard user={user} />
+        </>
       )}
     </div>
   );

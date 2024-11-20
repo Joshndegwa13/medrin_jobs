@@ -128,18 +128,12 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
-                  to="/signup"
+                  to="/register"
                   className="bg-primary-600 text-white px-6 py-2.5 rounded-full hover:bg-primary-700 transition-colors font-medium shadow-lg hover:shadow-primary-500/25"
                 >
                   Sign up
                 </Link>
               </motion.div>
-              <button
-                onClick={handleLogout}
-                className="text-red-600 hover:text-red-700 font-medium transition-colors"
-              >
-                Logout
-              </button>
             </div>
           </div>
 
