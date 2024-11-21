@@ -10,18 +10,6 @@ import {
   EyeIcon,
 } from "@heroicons/react/24/outline";
 
-const formatText = (value) => {
-  if (!value) return value;
-  return value
-    .split("_")
-    .map((word, index) =>
-      index === 0
-        ? word.charAt(0).toUpperCase() + word.slice(1)
-        : word.charAt(0).toUpperCase() + word.slice(1)
-    )
-    .join("-"); // Join the words back with a hyphen
-};
-
 const JobCard = ({ job, onViewApplicants, onDeleteJob }) => (
   <motion.div
     layout

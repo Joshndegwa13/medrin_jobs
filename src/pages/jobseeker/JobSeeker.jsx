@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
-import { useJobs } from "../../contexts/JobContext";
 import {
   locations,
   categories,
   employmentTypes,
   experienceLevels,
 } from "../../data/jobsData";
-import JobCard from "../../components/JobCard";
+import JobCard from "./JobCard";
 import FilterSection from "../../components/FilterSection";
-import JobModal from "../../components/JobModal";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const JobSeeker = ({ user }) => {
-  const { jobs } = useJobs();
+  const [jobs, setJobs] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || ""
@@ -23,10 +21,28 @@ const JobSeeker = ({ user }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [filteredJobs, setFilteredJobs] = useState(jobs);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch applicable jobs from the API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5555/applicable_jobs");
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs");
+        }
+        const data = await response.json();
+        setJobs(data.applicable_jobs);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  // Update search query from URL params
   useEffect(() => {
     const searchFromUrl = searchParams.get("search");
     if (searchFromUrl) {
@@ -34,19 +50,21 @@ const JobSeeker = ({ user }) => {
     }
   }, [searchParams]);
 
+  // Filter jobs based on search and selected filters
   useEffect(() => {
     const filtered = jobs.filter((job) => {
       const matchesSearch =
         job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.organisation.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
         job.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesLocation =
-        !selectedLocation || job.location === selectedLocation;
+        !selectedLocation || job.organisation.location === selectedLocation;
       const matchesCategory =
-        !selectedCategory || job.category === selectedCategory;
-      const matchesType = !selectedType || job.employmentType === selectedType;
-      const matchesLevel =
-        !selectedLevel || job.experienceLevel === selectedLevel;
+        !selectedCategory || job.industry === selectedCategory;
+      const matchesType = !selectedType || job.job_type === selectedType;
+      const matchesLevel = !selectedLevel || job.level === selectedLevel;
 
       return (
         matchesSearch &&
@@ -166,11 +184,10 @@ const JobSeeker = ({ user }) => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-12"
+                    exit={{ opacity: 0 }}
+                    className="text-center text-gray-500"
                   >
-                    <p className="text-xl text-gray-600">
-                      No jobs found matching your criteria
-                    </p>
+                    No jobs found matching your criteria.
                   </motion.div>
                 )}
               </motion.div>
@@ -178,13 +195,6 @@ const JobSeeker = ({ user }) => {
           </div>
         </div>
       </div>
-
-      {/* Job Details Modal */}
-      <JobModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        job={selectedJob}
-      />
     </div>
   );
 };
