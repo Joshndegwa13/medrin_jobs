@@ -18,7 +18,37 @@ const formatText = (value) => {
     .join("-"); // Join the words back with a hyphen
 };
 
-const JobCard = ({ job, onClick }) => {
+const handleApply = async (jobId, jobseeker_id) => {
+  try {
+    console.log(jobId);
+    console.log(jobseeker_id);
+
+    const response = await fetch("http://127.0.0.1:5555/apply_job", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobseeker_id: jobseeker_id, // Use optional chaining for safety
+        job_id: jobId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Error applying for job:", data.error);
+      alert(data.error || "Failed to apply for the job.");
+    } else {
+      alert(data.message || "Application submitted successfully!");
+    }
+  } catch (error) {
+    console.error("Error applying for job:", error);
+    alert("An error occurred. Please try again.");
+  }
+};
+
+const JobCard = ({ job, onClick, user }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -68,7 +98,7 @@ const JobCard = ({ job, onClick }) => {
 
           {/* Add the Apply Job button */}
           <button
-            onClick={() => handleApply(job.id)}
+            onClick={() => handleApply(job.id, user.jobseeker.id)}
             className="mt-4 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700"
           >
             Apply Job

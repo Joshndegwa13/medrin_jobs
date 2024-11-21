@@ -177,6 +177,7 @@ const JobSeeker = ({ user }) => {
                   <JobCard
                     key={job.id}
                     job={job}
+                    user={user}
                     onClick={() => handleJobClick(job)}
                   />
                 ))}
