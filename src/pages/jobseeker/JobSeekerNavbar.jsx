@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  UserCircleIcon,
   ChevronDownIcon,
-  ArrowRightOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const navVariants = {
@@ -72,13 +71,13 @@ const modalVariants = {
   },
 };
 
-const JobSeekerNavbar = () => {
+const JobSeekerNavbar = ({ user }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showApplicationsModal, setShowApplicationsModal] = useState(false);
+  const navigate = useNavigate();
 
-  const mockUser = {
-    lastname: "Doe",
-    profileImage: null,
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/");
   };
 
   return (
@@ -119,20 +118,10 @@ const JobSeekerNavbar = () => {
                   <motion.div
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.5 }}
-                  >
-                    {mockUser.profileImage ? (
-                      <img
-                        src={mockUser.profileImage}
-                        alt="Profile"
-                        className="h-8 w-8 rounded-full object-cover border-2 border-primary-100"
-                      />
-                    ) : (
-                      <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                        <UserCircleIcon className="h-6 w-6 text-primary-600" />
-                      </div>
-                    )}
-                  </motion.div>
-                  <span className="font-medium">{mockUser.lastname}</span>
+                  ></motion.div>
+                  <span className="font-medium">
+                    {user.jobseeker.first_name} {user.jobseeker.last_name}
+                  </span>
                   <motion.div
                     animate={{ rotate: showDropdown ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
@@ -157,10 +146,10 @@ const JobSeekerNavbar = () => {
                     >
                       <Link
                         to="/jobseeker/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50"
+                        className="block px-4 py-2 text-m text-gray-700 hover:bg-primary-50"
                         onClick={() => setShowDropdown(false)}
                       >
-                        Profile
+                        View Profile
                       </Link>
                     </motion.div>
                     <motion.div
@@ -169,9 +158,10 @@ const JobSeekerNavbar = () => {
                     >
                       <Link
                         to="/"
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-m text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        onClick={handleLogout} // Attach logout function to the logout link
                       >
-                        <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                        <ArrowRightStartOnRectangleIcon className="h-4 w-4" />
                         Logout
                       </Link>
                     </motion.div>
@@ -182,59 +172,6 @@ const JobSeekerNavbar = () => {
           </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {showApplicationsModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50"
-              onClick={() => setShowApplicationsModal(false)}
-            />
-            <motion.div
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white rounded-xl shadow-2xl z-50 p-6"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Jobs Applied
-              </h2>
-              <div className="space-y-4">
-                {[1, 2, 3].map((_, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.02 }}
-                    className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <h3 className="font-medium text-gray-900">
-                      Software Developer
-                    </h3>
-                    <p className="text-gray-600">TechCorp Inc.</p>
-                    <p className="text-sm text-primary-600 mt-2">
-                      Applied on: {new Date().toLocaleDateString()}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowApplicationsModal(false)}
-                className="mt-6 w-full bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Close
-              </motion.button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </motion.nav>
   );
 };

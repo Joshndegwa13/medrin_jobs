@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import {
   locations,
-  categories,
+  industries,
   employmentTypes,
   experienceLevels,
-} from "../../data/jobsData";
-import JobCard from "./JobCard";
-import FilterSection from "../../components/FilterSection";
+} from "../../constants/JobData";
+import JobCard from "./JobSeekerJobCard";
+import FilterSection from "../../common/landing/FilterSection";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 const JobSeeker = ({ user }) => {
   const [jobs, setJobs] = useState([]);
@@ -29,7 +30,7 @@ const JobSeeker = ({ user }) => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5555/applicable_jobs");
+        const response = await fetch(`${GlobalVariables.uri}/applicable_jobs`);
         if (!response.ok) {
           throw new Error("Failed to fetch jobs");
         }
@@ -120,7 +121,7 @@ const JobSeeker = ({ user }) => {
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 className="py-4 px-4 rounded-xl border-2 border-white/20 bg-white/10 text-white outline-none focus:border-white"
               >
-                <option value="">All Locations</option>
+                <option value="">Select a location</option>
                 {locations.map((location) => (
                   <option
                     key={location}
@@ -162,10 +163,10 @@ const JobSeeker = ({ user }) => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="py-2 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-primary-500"
               >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                <option value="">All Industries</option>
+                {industries.map((industry) => (
+                  <option key={industry} value={industry}>
+                    {industry}
                   </option>
                 ))}
               </select>

@@ -4,6 +4,7 @@ import OrganisationDashboard from "./organisation/OrganisationDashboard";
 import JobSeeker from "./jobseeker/JobSeeker";
 import OrganisationNavbar from "./organisation/OrganisationNavbar";
 import JobSeekerNavbar from "./jobseeker/JobSeekerNavbar";
+import GlobalVariables from "../constants/GlobalVariables";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -15,11 +16,11 @@ export default function Dashboard() {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
-          setError("No authentication token found.");
+          navigate("/");
           return;
         }
 
-        const response = await fetch("http://127.0.0.1:5555/user", {
+        const response = await fetch(`${GlobalVariables.uri}/user`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,6 +29,10 @@ export default function Dashboard() {
 
         if (!response.ok) {
           const errorData = await response.json();
+
+          if (errorData.error === "Invalid token") {
+            navigate("/");
+          }
           setError(errorData.error || "Failed to fetch user data.");
           return;
         }
@@ -45,7 +50,7 @@ export default function Dashboard() {
 
   if (error) return <p>{error}</p>;
 
-  if (!user) return <p>Loading user data...</p>;
+  if (!user) return;
 
   return (
     <div>

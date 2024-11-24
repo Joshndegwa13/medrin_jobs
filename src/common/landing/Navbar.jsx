@@ -10,7 +10,8 @@ import {
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showEmployerDropdown, setShowEmployerDropdown] = useState(false);
+  const [showOrganisationDropdown, setShowOrganisationDropdown] =
+    useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,11 +23,11 @@ const Navbar = () => {
   }, []);
 
   const handleMouseEnter = () => {
-    setShowEmployerDropdown(true);
+    setShowOrganisationDropdown(true);
   };
 
   const handleMouseLeave = () => {
-    setShowEmployerDropdown(false);
+    setShowOrganisationDropdown(false);
   };
 
   const handleLogout = () => {
@@ -70,15 +71,15 @@ const Navbar = () => {
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center space-x-1 text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                <span>For Employers</span>
+                <span>For Organisations</span>
                 <ChevronDownIcon
                   className={`h-4 w-4 transition-transform duration-200 ${
-                    showEmployerDropdown ? "rotate-180" : ""
+                    showOrganisationDropdown ? "rotate-180" : ""
                   }`}
                 />
               </button>
               <AnimatePresence>
-                {showEmployerDropdown && (
+                {showOrganisationDropdown && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -94,13 +95,13 @@ const Navbar = () => {
                         Dashboard
                       </Link>
                       <Link
-                        to="/employer/post-job"
+                        to="/Organisation/post-job"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors"
                       >
                         Post a Job
                       </Link>
                       <Link
-                        to="/employer/candidates"
+                        to="/Organisation/candidates"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors"
                       >
                         Manage Candidates
@@ -173,14 +174,14 @@ const Navbar = () => {
                 </Link>
                 <div className="space-y-1 pl-4 border-l-2 border-primary-100">
                   <Link
-                    to="/employer"
+                    to="/organisation"
                     className="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Employer Dashboard
+                    Organisation Dashboard
                   </Link>
                   <Link
-                    to="/employer/post-job"
+                    to="/organisation/post-job"
                     className="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

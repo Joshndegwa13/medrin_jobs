@@ -2,28 +2,49 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { locations } from "../../constants/JobData";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 const CreateOrganisation = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    user_id: localStorage.getItem("userId"),
     name: "",
     location: "",
     description: "",
     mission: "",
     vision: "",
   });
+  const [logo, setLogo] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Get userId from localStorage
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (!userId) {
       toast.error("User not found. Please log in first.");
-      navigate("/login"); // Navigate to login page if no userId is found
+      navigate("/login");
     }
   }, [userId, navigate]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && !["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        logo: "Please upload a PNG, JPG, or JPEG file",
+      }));
+      return;
+    }
+    setLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
+    if (errors.logo) {
+      setErrors((prev) => ({ ...prev, logo: "" }));
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,19 +71,22 @@ const CreateOrganisation = () => {
     }
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("user_id", userId);
+      formDataToSend.append("name", name);
+      formDataToSend.append("location", location);
+      formDataToSend.append("description", description);
+      formDataToSend.append("mission", mission);
+      formDataToSend.append("vision", vision);
+      if (logo) {
+        formDataToSend.append("logo", logo);
+      }
+
       const response = await fetch(
-        "http://127.0.0.1:5555/create_organisation",
+        `${GlobalVariables.uri}/create_organisation`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: userId,
-            name,
-            location,
-            description,
-            mission,
-            vision,
-          }),
+          body: formDataToSend,
         }
       );
 
@@ -70,8 +94,8 @@ const CreateOrganisation = () => {
         const responseData = await response.json();
         toast.success("Organisation created successfully!");
         setTimeout(() => {
-          navigate("/login"); // Redirect to employer dashboard after success
-        }, 2000); // Delay for 2 seconds to show the success message before redirecting
+          navigate("/login");
+        }, 2000);
       } else {
         const errorData = await response.json();
         toast.error(errorData.error || "Failed to create organisation");
@@ -101,6 +125,34 @@ const CreateOrganisation = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Logo
+                </label>
+                <div className="flex items-center space-x-4">
+                  {logoPreview ? (
+                    <img
+                      src={logoPreview}
+                      alt="Logo Preview"
+                      className="w-16 h-16 rounded-lg object-cover border"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 rounded-lg bg-primary-100 flex items-center justify-center">
+                      <UserCircleIcon className="h-14 w-14 text-primary-600" />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg, image/png, image/jpg"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-300 file:text-gray-700 hover:file:bg-gray-100"
+                  />
+                </div>
+                {errors.logo && (
+                  <p className="text-sm text-red-500 mt-2">{errors.logo}</p>
+                )}
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Organisation Name
                 </label>
                 <input
@@ -113,25 +165,35 @@ const CreateOrganisation = () => {
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Location
                 </label>
-                <input
-                  type="text"
-                  name="location"
+                <select
                   value={formData.location}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-2 rounded-lg border ${
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      location: e.target.value,
+                    }))
+                  }
+                  className={`py-4 px-4 rounded-xl border-2 ${
                     errors.location ? "border-red-500" : "border-gray-300"
-                  } focus:ring-2 focus:ring-primary-500`}
-                  required
-                />
+                  } bg-white text-gray-900 outline-none focus:border-primary-500 focus:ring-primary-500`}
+                >
+                  <option value="">Select a location</option>
+                  {locations.map((location) => (
+                    <option
+                      key={location}
+                      value={location}
+                      className="text-gray-900"
+                    >
+                      {location}
+                    </option>
+                  ))}
+                </select>
                 {errors.location && (
                   <p className="mt-1 text-sm text-red-500">{errors.location}</p>
                 )}

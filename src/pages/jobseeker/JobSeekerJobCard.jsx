@@ -5,6 +5,7 @@ import {
   ClockIcon,
   BriefcaseIcon,
 } from "@heroicons/react/24/outline";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 const formatText = (value) => {
   if (!value) return value;
@@ -23,7 +24,7 @@ const handleApply = async (jobId, jobseeker_id) => {
     console.log(jobId);
     console.log(jobseeker_id);
 
-    const response = await fetch("http://127.0.0.1:5555/apply_job", {
+    const response = await fetch(`${GlobalVariables.uri}/apply_job`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

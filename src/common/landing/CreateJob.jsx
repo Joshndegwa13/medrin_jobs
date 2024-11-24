@@ -1,23 +1,31 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useJobs } from "../../contexts/JobContext";
-import { categories, locations, employmentTypes } from "../../data/jobsData";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
+import JobConverter from "../../constants/JobConverter";
 
-const PostJob = () => {
+import {
+  industries,
+  employmentTypes,
+  experienceLevels,
+} from "../../constants/JobData";
+import GlobalVariables from "../../constants/GlobalVariables";
+
+const CreateJob = () => {
+  const location = useLocation();
+  const user = location.state?.user;
   const navigate = useNavigate();
-  const { addJob } = useJobs();
+
   const [formData, setFormData] = useState({
     title: "",
     location: "",
     employmentType: "",
-    category: "",
+    industry: "",
     experienceLevel: "",
-    salary: "",
     description: "",
     responsibilities: [""],
-    qualifications: [""],
+    requirements: [""],
     benefits: [""],
   });
 
@@ -49,9 +57,38 @@ const PostJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addJob(formData);
-    toast.success("Job posted successfully!");
-    navigate("/dashboard");
+
+    const jobData = {
+      title: formData.title,
+      description: formData.description,
+      industry: JobConverter.toDbIndustry(formData.industry),
+      level: JobConverter.toDbJobLevel(formData.experienceLevel),
+      job_type: JobConverter.toDbJobType(formData.employmentType),
+      job_benefits: formData.benefits,
+      job_requirements: formData.requirements,
+      job_responsibilities: formData.responsibilities,
+    };
+
+    // Call backend API to create a job
+    fetch(`${GlobalVariables.uri}/create_job/${user.organisation.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jobData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Job createed successfully!") {
+          toast.success("Job created successfully!");
+          navigate("/dashboard");
+        } else {
+          toast.error(data.error || "Failed to create job");
+        }
+      })
+      .catch((error) => {
+        toast.error(`An error occurred while creating the job: ${error}`);
+      });
   };
 
   return (
@@ -62,11 +99,18 @@ const PostJob = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-xl shadow-lg p-6 md:p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Post a New Job
-          </h1>
-
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="h-20 bg-white flex items-center px-4 py-2">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center text-gray-700 hover:text-blue-500"
+              >
+                <ArrowLeftCircleIcon className="h-10 w-10 mr-2" />
+              </button>
+              <h1 className="text-2xl font-bold text-gray-900 ml-4">
+                Create a New Job
+              </h1>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -84,32 +128,12 @@ const PostJob = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Location
-                </label>
-                <select
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  required
-                >
-                  <option value="">Select Location</option>
-                  {locations.map((location) => (
-                    <option key={location} value={location}>
-                      {location}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Employment Type
                 </label>
                 <select
                   name="employmentType"
                   value={formData.employmentType}
-                  onChange={handleInputChange}
+                  onChange={(event) => handleInputChange(event)}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
                 >
@@ -124,19 +148,19 @@ const PostJob = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
+                  Industry
                 </label>
                 <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
+                  name="industry"
+                  value={formData.industry}
+                  onChange={(event) => handleInputChange(event)}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
                 >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                  <option value="">Select Industry</option>
+                  {industries.map((industry) => (
+                    <option key={industry} value={industry}>
+                      {industry}
                     </option>
                   ))}
                 </select>
@@ -149,15 +173,16 @@ const PostJob = () => {
                 <select
                   name="experienceLevel"
                   value={formData.experienceLevel}
-                  onChange={handleInputChange}
+                  onChange={(event) => handleInputChange(event)}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
                 >
                   <option value="">Select Level</option>
-                  <option value="Internship">Internship</option>
-                  <option value="Entry-level">Entry-level</option>
-                  <option value="Mid-level">Mid-level</option>
-                  <option value="Senior-level">Senior-level</option>
+                  {experienceLevels.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -177,7 +202,7 @@ const PostJob = () => {
             </div>
 
             {/* Dynamic Fields */}
-            {["responsibilities", "qualifications", "benefits"].map((field) => {
+            {["responsibilities", "requirements", "benefits"].map((field) => {
               const singularField =
                 field === "responsibilities"
                   ? "responsibility"
@@ -213,12 +238,12 @@ const PostJob = () => {
                       {formData[field].length > 1 && (
                         <motion.button
                           type="button"
-                          whileHover={{ scale: 1.05 }}
+                          whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => removeArrayField(field, index)}
                           className="text-red-500 hover:text-red-600"
                         >
-                          Remove
+                          &times;
                         </motion.button>
                       )}
                     </div>
@@ -227,24 +252,13 @@ const PostJob = () => {
               );
             })}
 
-            <div className="flex justify-end gap-4">
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => navigate("/employer")}
-                className="px-6 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </motion.button>
-              <motion.button
+            <div className="flex justify-end">
+              <button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-primary-600 text-white px-6 py-2.5 rounded-lg hover:bg-primary-700 transition-colors shadow-lg hover:shadow-primary-500/25"
+                className="px-6 py-3 rounded-full bg-primary-500 text-white hover:bg-primary-600"
               >
-                Post Job
-              </motion.button>
+                Create Job
+              </button>
             </div>
           </form>
         </motion.div>
@@ -253,4 +267,4 @@ const PostJob = () => {
   );
 };
 
-export default PostJob;
+export default CreateJob;

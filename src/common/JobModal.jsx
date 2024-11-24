@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { XMarkIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { XMarkIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 const DetailSection = ({ title, items }) => {
   if (!items || items.length === 0) return null;
-  
+
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
@@ -67,8 +67,12 @@ const JobModal = ({ isOpen, onClose, job }) => {
                       className="flex flex-col items-center justify-center py-12"
                     >
                       <CheckCircleIcon className="h-16 w-16 text-green-500 mb-4" />
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Successful!</h3>
-                      <p className="text-gray-600">Thank you for applying to {job.title}</p>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        Application Successful!
+                      </h3>
+                      <p className="text-gray-600">
+                        Thank you for applying to {job.title}
+                      </p>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -78,48 +82,67 @@ const JobModal = ({ isOpen, onClose, job }) => {
                       className="space-y-6 max-h-[70vh] overflow-y-auto pr-2"
                     >
                       <div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">{job.title}</h2>
-                        <p className="text-xl text-primary-600">{job.company}</p>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                          {job.title}
+                        </h2>
+                        <p className="text-xl text-primary-600">
+                          {job.company}
+                        </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-6">
                         <div>
                           <p className="text-sm text-gray-500 mb-1">Location</p>
-                          <p className="font-medium text-gray-900">{job.location}</p>
+                          <p className="font-medium text-gray-900">
+                            {job.location}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">Employment Type</p>
-                          <p className="font-medium text-gray-900">{job.employmentType}</p>
+                          <p className="text-sm text-gray-500 mb-1">
+                            Employment Type
+                          </p>
+                          <p className="font-medium text-gray-900">
+                            {job.employmentType}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">Experience Level</p>
-                          <p className="font-medium text-gray-900">{job.experienceLevel}</p>
+                          <p className="text-sm text-gray-500 mb-1">
+                            Experience Level
+                          </p>
+                          <p className="font-medium text-gray-900">
+                            {job.experienceLevel}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">Salary Range</p>
-                          <p className="font-medium text-gray-900">{job.salary}</p>
+                          <p className="text-sm text-gray-500 mb-1">
+                            Salary Range
+                          </p>
+                          <p className="font-medium text-gray-900">
+                            {job.salary}
+                          </p>
                         </div>
                       </div>
 
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Job Description</h3>
-                        <p className="text-gray-700 leading-relaxed">{job.description}</p>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          Job Description
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed">
+                          {job.description}
+                        </p>
                       </div>
 
-                      <DetailSection 
-                        title="Key Responsibilities" 
+                      <DetailSection
+                        title="Key Responsibilities"
                         items={job.responsibilities}
                       />
 
-                      <DetailSection 
-                        title="Qualifications" 
+                      <DetailSection
+                        title="Qualifications"
                         items={job.qualifications}
                       />
 
-                      <DetailSection 
-                        title="Benefits" 
-                        items={job.benefits}
-                      />
+                      <DetailSection title="Benefits" items={job.benefits} />
 
                       <div className="flex justify-end gap-4 pt-4">
                         <motion.button

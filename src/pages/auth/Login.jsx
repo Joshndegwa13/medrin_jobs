@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,10 +10,10 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/login", {
+      const response = await fetch(`${GlobalVariables.uri}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -21,19 +22,14 @@ export default function Login() {
       });
 
       if (!response.ok) {
-        // If the response is not OK, extract error details
         const errorData = await response.json();
         setError(errorData.error || "Login failed. Please try again.");
         return;
       }
 
       const data = await response.json();
-      console.log("Response Data:", data);
-
-      // Store token and user id
       localStorage.setItem("authToken", data.user.token);
 
-      // Navigate to dashboard
       navigate("/dashboard");
     } catch (error) {
       setError("An error occurred. Please try again.");

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   BuildingOfficeIcon,
   ChevronDownIcon,
-  ArrowRightOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const navVariants = {
@@ -74,7 +74,7 @@ const OrganisationNavbar = ({ user }) => {
           <div className="flex items-center space-x-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                to="/employer/pricing"
+                to="/organisation/pricing"
                 className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
               >
                 Pricing Plans
@@ -83,7 +83,7 @@ const OrganisationNavbar = ({ user }) => {
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                to="/employer/candidates"
+                to="/organisation/candidates"
                 className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
               >
                 Manage Applications
@@ -140,7 +140,7 @@ const OrganisationNavbar = ({ user }) => {
                       <Link
                         to="/organisation/profile"
                         state={{ user }}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50"
+                        className="block px-4 py-2 text-m text-gray-700 hover:bg-primary-50"
                         onClick={() => setShowDropdown(false)}
                       >
                         Company Profile
@@ -152,9 +152,9 @@ const OrganisationNavbar = ({ user }) => {
                     >
                       <Link
                         to="/"
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-m text-red-600 hover:bg-red-50 flex items-center gap-2"
                       >
-                        <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                        <ArrowRightStartOnRectangleIcon className="h-4 w-4" />
                         Logout
                       </Link>
                     </motion.div>

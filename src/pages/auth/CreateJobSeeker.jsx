@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 import axios from "axios";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 const schema = z.object({
-  firstname: z.string().min(2, "First name is too short"),
-  lastname: z.string().min(2, "Last name is too short"),
+  user_id: z.string().uuid("Invalid user ID"), // Ensure user_id is a valid UUID
+  first_name: z.string().min(2, "First name is too short"),
+  last_name: z.string().min(2, "Last name is too short"),
   phone: z.string().min(10, "Invalid phone number"),
   location: z.string().min(2, "Location is required"),
-  dateOfBirth: z.string().refine((date) => new Date(date) < new Date(), {
+  dob: z.string().refine((date) => new Date(date) < new Date(), {
     message: "Date of birth must be in the past",
   }),
   cv: z.instanceof(File).optional(),
@@ -19,11 +21,12 @@ const schema = z.object({
 const CreateJobSeeker = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
+    user_id: localStorage.getItem("userId"),
+    first_name: "",
+    last_name: "",
     phone: "",
     location: "",
-    dateOfBirth: "",
+    dob: "",
   });
   const [cv, setCV] = useState(null);
   const [errors, setErrors] = useState({});
@@ -56,32 +59,46 @@ const CreateJobSeeker = () => {
     setErrors({});
 
     try {
-      const validatedData = schema.parse({ ...formData, cv });
+      const dobDate = new Date(formData.dob);
+      const dobString = dobDate.toISOString().split("T")[0];
+      const formattedDob = formData.dob.split("-").reverse().join("/");
 
-      const formDataToSend = new FormData();
+      const validatedData = schema.parse({
+        ...formData,
+        dob: dobString,
+        cv,
+      });
+
+      const submitData = new FormData();
       Object.keys(validatedData).forEach((key) => {
         if (key === "cv" && cv) {
-          formDataToSend.append("cv", cv);
-        } else {
-          formDataToSend.append(key, validatedData[key]);
+          submitData.append("cv", cv);
+        } else if (key !== "dob") {
+          submitData.append(key, validatedData[key]);
         }
       });
 
+      submitData.append("dob", formattedDob);
+
       const response = await axios.post(
-        "http://127.0.0.1:5555/create_jobseeker",
-        formDataToSend
+        `${GlobalVariables.uri}/create_jobseeker`,
+        submitData
       );
+
       toast.success("Registration successful!");
-      navigate("/login"); // Redirect user to login after successful registration
+      navigate("/login");
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors = {};
         error.errors.forEach((err) => {
           newErrors[err.path[0]] = err.message;
         });
-        setErrors(newErrors); // Update errors state
+        setErrors(newErrors);
       } else {
-        toast.error(error.response?.data?.error || "Registration failed");
+        toast.error(
+          error.response?.data?.error ||
+            "Registration failed. Please try again."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -107,17 +124,17 @@ const CreateJobSeeker = () => {
                 </label>
                 <input
                   type="text"
-                  name="firstname"
-                  value={formData.firstname}
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.firstname ? "border-red-500" : "border-gray-300"
+                    errors.first_name ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
-                {errors.firstname && (
+                {errors.first_name && (
                   <p className="mt-1 text-sm text-red-500">
-                    {errors.firstname}
+                    {errors.first_name}
                   </p>
                 )}
               </div>
@@ -128,16 +145,18 @@ const CreateJobSeeker = () => {
                 </label>
                 <input
                   type="text"
-                  name="lastname"
-                  value={formData.lastname}
+                  name="last_name"
+                  value={formData.last_name}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.lastname ? "border-red-500" : "border-gray-300"
+                    errors.last_name ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
-                {errors.lastname && (
-                  <p className="mt-1 text-sm text-red-500">{errors.lastname}</p>
+                {errors.last_name && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.last_name}
+                  </p>
                 )}
               </div>
 
@@ -185,18 +204,16 @@ const CreateJobSeeker = () => {
                 </label>
                 <input
                   type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
+                  name="dob"
+                  value={formData.dob}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 rounded-lg border ${
-                    errors.dateOfBirth ? "border-red-500" : "border-gray-300"
+                    errors.dob ? "border-red-500" : "border-gray-300"
                   } focus:ring-2 focus:ring-primary-500`}
                   required
                 />
-                {errors.dateOfBirth && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.dateOfBirth}
-                  </p>
+                {errors.dob && (
+                  <p className="mt-1 text-sm text-red-500">{errors.dob}</p>
                 )}
               </div>
 

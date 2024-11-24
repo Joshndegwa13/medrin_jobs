@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 const JobSeekerProfile = () => {
-  const { user, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstname: user?.firstname || "",
@@ -47,7 +45,7 @@ const JobSeekerProfile = () => {
           className="bg-white rounded-xl shadow-lg p-6"
         >
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -84,7 +82,7 @@ const JobSeekerProfile = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   First Name
                 </label>
                 <input
@@ -98,7 +96,7 @@ const JobSeekerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   Last Name
                 </label>
                 <input
@@ -112,7 +110,7 @@ const JobSeekerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   Location
                 </label>
                 <input
@@ -126,7 +124,7 @@ const JobSeekerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   Phone
                 </label>
                 <input
@@ -140,7 +138,7 @@ const JobSeekerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   Date of Birth
                 </label>
                 <input
@@ -154,7 +152,7 @@ const JobSeekerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-m font-medium text-gray-700 mb-1">
                   CV
                 </label>
                 {isEditing ? (

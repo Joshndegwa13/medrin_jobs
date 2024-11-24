@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ function Register() {
     setErrorMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/register", {
+      const response = await fetch(`${GlobalVariables.uri}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +112,7 @@ function Register() {
             >
               <option value="">Select your role</option>
               <option value="job_seeker">Job Seeker</option>
-              <option value="organisation">Employer</option>
+              <option value="organisation">Organisation</option>
             </select>
           </div>
 

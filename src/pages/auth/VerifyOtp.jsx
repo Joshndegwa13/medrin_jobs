@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import GlobalVariables from "../../constants/GlobalVariables";
 
 function VerifyOtp() {
   const location = useLocation();
@@ -19,7 +20,7 @@ function VerifyOtp() {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/verify_otp", {
+      const response = await fetch(`${GlobalVariables.uri}/verify_otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

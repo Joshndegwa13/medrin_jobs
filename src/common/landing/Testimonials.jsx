@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const testimonials = [
   {
-    name: 'Joshua N.',
-    text: 'The seamless user experience at Medrin Jobs made my job search incredibly efficient. I found my dream position within weeks!',
-    role: 'Software Engineer',
-    rating: 5
+    name: "Joshua N.",
+    text: "The seamless user experience at Medrin Jobs made my job search incredibly efficient. I found my dream position within weeks!",
+    role: "Software Engineer",
+    rating: 5,
   },
   {
-    name: 'Walter I.',
-    text: 'As a fresh graduate, Medrin Jobs helped me land my first job. The platform is intuitive and the job matches were spot-on!',
-    role: 'Marketing Associate',
-    rating: 5
+    name: "Walter I.",
+    text: "As a fresh graduate, Medrin Jobs helped me land my first job. The platform is intuitive and the job matches were spot-on!",
+    role: "Marketing Associate",
+    rating: 5,
   },
   {
-    name: 'Craig W.',
-    text: 'The filtering functionality helped me find exactly what I was looking for. Medrin Jobs streamlined my entire job search process.',
-    role: 'Product Manager',
-    rating: 5
+    name: "Craig W.",
+    text: "The filtering functionality helped me find exactly what I was looking for. Medrin Jobs streamlined my entire job search process.",
+    role: "Product Manager",
+    rating: 5,
   },
   {
-    name: 'Joy M.',
-    text: 'The affordable price options made premium job searching accessible. I found great value in the services provided!',
-    role: 'Financial Analyst',
-    rating: 5
+    name: "Joy M.",
+    text: "The affordable price options made premium job searching accessible. I found great value in the services provided!",
+    role: "Financial Analyst",
+    rating: 5,
   },
   {
-    name: 'Winnie O.',
-    text: 'Medrin Jobs excels at connecting job seekers with employers. The platform helped me find my perfect career match!',
-    role: 'HR Manager',
-    rating: 5
-  }
+    name: "Winnie O.",
+    text: "Medrin Jobs excels at connecting job seekers with organisations. The platform helped me find my perfect career match!",
+    role: "HR Manager",
+    rating: 5,
+  },
 ];
 
 const TestimonialCard = ({ testimonial, isActive }) => (
@@ -41,7 +41,7 @@ const TestimonialCard = ({ testimonial, isActive }) => (
     animate={{ opacity: isActive ? 1 : 0.5, scale: isActive ? 1 : 0.9 }}
     transition={{ duration: 0.5 }}
     className={`bg-white p-8 rounded-2xl shadow-xl transform transition-all duration-500 ${
-      isActive ? 'scale-100 z-10' : 'scale-95 opacity-50'
+      isActive ? "scale-100 z-10" : "scale-95 opacity-50"
     }`}
   >
     <div className="flex gap-1 mb-6">
@@ -65,9 +65,7 @@ const TestimonialCard = ({ testimonial, isActive }) => (
         <p className="text-xl font-semibold text-gray-900">
           {testimonial.name}
         </p>
-        <p className="text-primary-600">
-          {testimonial.role}
-        </p>
+        <p className="text-primary-600">{testimonial.role}</p>
       </div>
     </div>
   </motion.div>
@@ -89,7 +87,9 @@ const Testimonials = () => {
 
   const handlePrevious = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+    );
   };
 
   const handleNext = () => {
@@ -174,7 +174,7 @@ const Testimonials = () => {
                   setIsAutoPlaying(false);
                 }}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? 'bg-primary-600 w-6' : 'bg-gray-300'
+                  index === currentIndex ? "bg-primary-600 w-6" : "bg-gray-300"
                 }`}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.8 }}
